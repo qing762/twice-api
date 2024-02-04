@@ -34,7 +34,7 @@ jobs:
 
       - name: Lint & Validate links
         run: |
-          python validate.py twice.json
+          python lib/validate.py twice.json
 
       - name: Zip repo files
         uses: papeloto/action-zip@v1
