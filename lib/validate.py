@@ -7,11 +7,27 @@ import re
 
 
 async def lintCheck():
-    subprocess.run("flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics")
     subprocess.run(
-        "flake8 . --count --exit-zero --max-complexity=15 --max-line-length=300 --statistics"
+        [
+            "flake8",
+            ".",
+            "--count",
+            "--select=E9,F63,F7,F82",
+            "--show-source",
+            "--statistics",
+        ]
     )
-    return
+    subprocess.run(
+        [
+            "flake8",
+            ".",
+            "--count",
+            "--exit-zero",
+            "--max-complexity=15",
+            "--max-line-length=300",
+            "--statistics",
+        ]
+    )
 
 
 async def validateLinks():
@@ -40,7 +56,7 @@ async def validateLinks():
         for url in urls:
             async with session.get(url) as response:
                 if response.status == 200:
-                    print(f"0")
+                    print("0")
                 else:
                     print(f"Link is invalid: {url}")
                     all_links_valid = False
