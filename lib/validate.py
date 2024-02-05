@@ -28,7 +28,7 @@ async def lintCheck():
         )
     except subprocess.CalledProcessError as e:
         print(f"Linting failed with {str(e)}")
-        return
+        sys.exit(1)
     try:
         subprocess.run(
             [
@@ -44,7 +44,7 @@ async def lintCheck():
         )
     except subprocess.CalledProcessError as e:
         print(f"Linting failed with {str(e)}")
-        return
+        sys.exit(1)
     print("Linting passed!\n\n")
 
 
@@ -79,7 +79,7 @@ async def validateLinks():
         print("All links are valid!\n\n")
     else:
         print(f"Invalid links found:\n{invalidURL}\n\n")
-        return
+        sys.exit(1)
 
 
 async def validateLang():
@@ -119,14 +119,14 @@ async def validateLang():
                         },
                         invalidLang,
                     )
-                    return
+                    sys.exit(1)
             print("0")
 
     if all_lang_valid:
         print("All languages are correct!\n")
     else:
         print(f"Incorrect languages found:\n{[x['value'] for x in invalidLang]}\n\n")
-        return
+        sys.exit(1)
 
 
 if __name__ == "__main__":
