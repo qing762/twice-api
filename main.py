@@ -1,8 +1,12 @@
 import aiohttp
 import asyncio
+import langcodes
 import json
 import re
+import os
+import sys
 from bs4 import BeautifulSoup
+from googletrans import Translator
 
 
 class Main:
@@ -19,6 +23,7 @@ class Main:
             "Tzuyu",
         ]
         memberData = {}
+        translator = Translator()
         async with aiohttp.ClientSession() as session:
             for x in memberName:
                 async with session.get(
@@ -42,33 +47,39 @@ class Main:
                         else None
                     )
 
+                    name, native = name.split(" (")
+                    native = native.replace(")", "")
+                    native_lang = translator.detect(native).lang.split("-", 1)[0]
+
                     div = soup.find(
                         "div",
                         class_="pi-item pi-data pi-item-spacing pi-border-color",
                         attrs={"data-source": "other_name"},
                     )
 
-                    if div:
-                        text = div.find("div", class_="pi-data-value pi-font").text
-                        otherName = {}
-                        for line in text.split("\n"):
-                            if ":" in line:
-                                matches = re.findall(
-                                    r"([A-Za-z]+): ([\u4e00-\u9fff|\u3040-\u30ff]+)",
-                                    line,
-                                )
-                                for match in matches:
-                                    lang, name = match
-                                    otherName[lang] = name
-                            else:
-                                if "Dubu (Tofu)" in line:
-                                    otherName["Informal"] = "Dubu (Tofu)"
-                                elif "(" in line and ")" in line:
-                                    name, lang = line.split(" (")
-                                    lang = lang.replace(")", "")
-                                    otherName[lang] = name
-                    else:
-                        otherName = None
+                    text = div.find("div", class_="pi-data-value pi-font").text
+
+                    otherName = {}
+                    languages = ["Chinese", "Japanese", "Korean", "English"]
+
+                    for line in text.split("\n"):
+                        if ":" in line:
+                            for lang in languages:
+                                line = line.replace(lang + ":", ", " + lang + ":")
+                            line = line[2:] if line.startswith(", ") else line
+                            entries = line.split(",")
+                            entries = [
+                                entry.strip() for entry in entries if entry.strip()
+                            ]
+                            for entry in entries:
+                                lang, lang_name = entry.split(":")
+                                if "Dubu (Tofu)" in lang_name:
+                                    lang_name = lang_name.partition("Dubu (Tofu)")[0]
+                                    otherName["informal"] = "Dubu (Tofu)"
+                                lang = str(langcodes.find(lang.strip()))
+                                otherName[lang] = lang_name.strip()
+
+                        otherName[native_lang] = native
 
                     birthDate, age = (
                         soup.find(
@@ -85,6 +96,7 @@ class Main:
                         )
                         else None
                     )
+
                     age = age[:-1] if age else None
 
                     birthPlace = (
@@ -427,7 +439,7 @@ class Main:
                                 y.get_text(),
                             )
                             .replace("''", '"')
-                            .replace("\u00A0", " ")
+                            .replace(" ", " ")
                             .strip()
                         )
 
@@ -472,6 +484,13 @@ class Main:
 
 
 if __name__ == "__main__":
-    memberData = asyncio.run(Main.Main())
-    with open("twice.json", "w", encoding="utf-8") as f:
-        json.dump(memberData, f, indent=2)
+    try:
+        memberData = asyncio.run(Main.Main())
+        with open("twice.json", "w", encoding="utf-8") as f:
+            json.dump(memberData, f, indent=2)
+    except KeyboardInterrupt:
+        print("Process stopping due to keyboard interrupt")
+        try:
+            sys.exit(130)
+        except SystemExit:
+            os._exit(130)
