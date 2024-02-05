@@ -2,4 +2,4 @@ aiohttp==3.9.1
 beautifulsoup4==4.12.3
 googletrans==3.1.0a0
 langcodes==3.3.0
-languagedata
+language-data==1.1
