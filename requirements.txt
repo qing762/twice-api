@@ -3,3 +3,4 @@ beautifulsoup4==4.12.3
 googletrans==3.1.0a0
 langcodes==3.3.0
 lxml==4.9.3
+language-data==1.1
