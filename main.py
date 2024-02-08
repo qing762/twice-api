@@ -7,10 +7,11 @@ import os
 import sys
 from bs4 import BeautifulSoup
 from googletrans import Translator
+from lxml import etree
 
 
 class Main:
-    async def Main():
+    async def Member():
         memberName = [
             "Nayeon",
             "Jeongyeon",
@@ -59,7 +60,7 @@ class Main:
 
                     text = div.find("div", class_="pi-data-value pi-font").text
 
-                    otherName = {}
+                    otherNames = {}
                     languages = ["Chinese", "Japanese", "Korean", "English"]
 
                     for line in text.split("\n"):
@@ -75,11 +76,11 @@ class Main:
                                 lang, lang_name = entry.split(":")
                                 if "Dubu (Tofu)" in lang_name:
                                     lang_name = lang_name.partition("Dubu (Tofu)")[0]
-                                    otherName["informal"] = "Dubu (Tofu)"
+                                    otherNames["informal"] = "Dubu (Tofu)"
                                 lang = str(langcodes.find(lang.strip()))
-                                otherName[lang] = lang_name.strip()
+                                otherNames[lang] = lang_name.strip()
 
-                        otherName[native_lang] = native
+                        otherNames[native_lang] = native
 
                     birthDate, age = (
                         soup.find(
@@ -447,7 +448,7 @@ class Main:
 
                 data = {
                     "name": name,
-                    "otherName": otherName,
+                    "otherNames": otherNames,
                     "birthDate": birthDate,
                     "age": age,
                     "birthPlace": birthPlace,
@@ -482,12 +483,186 @@ class Main:
 
         return memberData
 
+    async def ships():
+        shipsData = {}
+        shipsURL = []
+
+        async with aiohttp.ClientSession() as session:
+            async with session.get(
+                "https://twice.fandom.com/wiki/Category:Pairings"
+            ) as response:
+                soup = BeautifulSoup(await response.text(), "html.parser")
+                xpath = etree.HTML(await response.text())
+                div = soup.find("div", class_="category-page__members")
+
+                for y in div.find_all("div", class_="category-page__members-wrapper"):
+                    ul = y.find("ul", class_="category-page__members-for-char")
+                    for z in ul.find_all("li", class_="category-page__member"):
+                        div = z.find("div", class_="category-page__member-left")
+                        url = f"https://twice.fandom.com{z.find('a')['href']}"
+                        shipsURL.append(url)
+            for z in shipsURL:
+                otherNames = []
+                similarities = []
+                differences = []
+                facts = []
+                rivals = []
+                async with session.get(z) as response:
+                    soup = BeautifulSoup(await response.text(), "html.parser")
+                    xpath = etree.HTML(await response.text())
+                    name = (
+                        soup.find(
+                            "h2",
+                            class_="pi-item pi-item-spacing pi-title pi-secondary-background",
+                            attrs={"data-source": "name"},
+                        ).get_text()
+                        if soup.find(
+                            "h2",
+                            class_="pi-item pi-item-spacing pi-title pi-secondary-background",
+                            attrs={"data-source": "name"},
+                        )
+                        else (
+                            soup.find(
+                                "h2",
+                                class_="pi-item pi-item-spacing pi-title pi-secondary-background",
+                                attrs={"data-source": "title1"},
+                            ).get_text()
+                            if soup.find(
+                                "h2",
+                                class_="pi-item pi-item-spacing pi-title pi-secondary-background",
+                                attrs={"data-source": "title1"},
+                            )
+                            else None
+                        )
+                    )
+
+                    shipped = (
+                        soup.find(
+                            "div",
+                            class_="pi-item pi-data pi-item-spacing pi-border-color",
+                            attrs={"data-source": "shipped"},
+                        )
+                        .find("div", class_="pi-data-value pi-font")
+                        .get_text()
+                        .split(" and ")
+                        if soup.find(
+                            "div",
+                            class_="pi-item pi-data pi-item-spacing pi-border-color",
+                            attrs={"data-source": "shipped"},
+                        )
+                        else None
+                    )
+
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "other names"},
+                    ):
+                        for y in (
+                            soup.find(
+                                "div",
+                                class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                attrs={"data-source": "other names"},
+                            )
+                            .find("div", class_="pi-data-value pi-font")
+                            .find("ul")
+                            .find_all("li")
+                        ):
+                            otherNames.append(y.get_text())
+
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "rivals"},
+                    ):
+                        for y in (
+                            soup.find(
+                                "div",
+                                class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                attrs={"data-source": "rivals"},
+                            )
+                            .find("div", class_="pi-data-value pi-font")
+                            .find("ul")
+                            .find_all("li")
+                        ):
+                            rivals.append(y.get_text())
+
+                    similaritiesSearch = xpath.xpath(
+                        '//*[@id="mw-content-text"]/div/ul[2]'
+                    )
+                    if similaritiesSearch:
+                        similaritiesSearch = BeautifulSoup(
+                            etree.tostring(
+                                similaritiesSearch[0],
+                                pretty_print=True,
+                            ).decode(),
+                            "html.parser",
+                        ).get_text()
+                        similarities = [s for s in similaritiesSearch.split("\n") if s]
+
+                    differencesSearch = xpath.xpath(
+                        '//*[@id="mw-content-text"]/div/ul[3]'
+                    )
+                    if differencesSearch:
+                        differencesSearch = BeautifulSoup(
+                            etree.tostring(
+                                differencesSearch[0],
+                                pretty_print=True,
+                            ).decode(),
+                            "html.parser",
+                        ).get_text()
+                        differences = [d for d in differencesSearch.split("\n") if d]
+
+                    factsSearch = xpath.xpath('//*[@id="mw-content-text"]/div/ul[4]')
+                    if factsSearch:
+                        factsSearch = BeautifulSoup(
+                            etree.tostring(
+                                factsSearch[0],
+                                pretty_print=True,
+                            ).decode(),
+                            "html.parser",
+                        ).get_text()
+                        facts = [f for f in factsSearch.split("\n") if f]
+
+                    images = (
+                        soup.find(
+                            "figure",
+                            class_="pi-item pi-image",
+                            attrs={"data-source": "image"},
+                        ).find("a", class_="image image-thumbnail")["href"]
+                        + "&format=original"
+                        if soup.find(
+                            "figure",
+                            class_="pi-item pi-image",
+                            attrs={"data-source": "image"},
+                        ).find("a", class_="image image-thumbnail")
+                        else None
+                    )
+
+                data = {
+                    "name": name,
+                    "shipped": shipped,
+                    "otherNames": otherNames,
+                    "rivals": rivals,
+                    "similarities": similarities,
+                    "differences": differences,
+                    "facts": facts,
+                    "images": images,
+                    "fandom": z,
+                }
+
+                shipsData[name] = data
+
+        return shipsData
+
 
 if __name__ == "__main__":
     try:
-        memberData = asyncio.run(Main.Main())
+        memberData = asyncio.run(Main.Member())
+        shipsData = asyncio.run(Main.ships())
+        combinedData = {"member": memberData, "ships": shipsData}
         with open("twice.json", "w", encoding="utf-8") as f:
-            json.dump(memberData, f, indent=2)
+            json.dump(combinedData, f, indent=4)
     except KeyboardInterrupt:
         print("Process stopping due to keyboard interrupt")
         try:

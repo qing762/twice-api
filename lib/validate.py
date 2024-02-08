@@ -28,7 +28,7 @@ async def lintCheck():
         )
     except subprocess.CalledProcessError as e:
         print(f"Linting failed with {str(e)}")
-        return
+        sys.exit(1)
     try:
         subprocess.run(
             [
@@ -44,7 +44,7 @@ async def lintCheck():
         )
     except subprocess.CalledProcessError as e:
         print(f"Linting failed with {str(e)}")
-        return
+        sys.exit(1)
     print("Linting passed!\n\n")
 
 
@@ -79,7 +79,7 @@ async def validateLinks():
         print("All links are valid!\n\n")
     else:
         print(f"Invalid links found:\n{invalidURL}\n\n")
-        return
+        sys.exit(1)
 
 
 async def validateLang():
@@ -92,41 +92,45 @@ async def validateLang():
     with open(file, "r", encoding="utf-8") as file:
         data = json.load(file)
 
-    for member in data:
-        for key, value in data[member]["otherName"].items():
-            detected = translator.detect(value)
-            detected_lang = detected.lang
-            if isinstance(detected_lang, list):
-                detected_lang = detected_lang[0]
-            if detected_lang == "zh-CN":
-                detected_lang = "zh"
-            if isinstance(detected_lang, str) and detected_lang != key:
-                if value == "名井南" and detected_lang == "ja":
-                    continue
-                elif value == "Dubu (Tofu)" and detected_lang == "zh":
-                    continue
-                elif value == "平井桃" and detected_lang == "ja":
-                    continue
-                elif value == "凑崎纱夏" and detected_lang == "ja":
-                    continue
-                else:
-                    all_lang_valid = False
-                    json.dump(
-                        {
-                            "value": value,
-                            "key": key,
-                            "detected_lang": detected_lang,
-                        },
-                        invalidLang,
-                    )
-                    return
-            print("0")
+    for x in data:
+        if x == "member":
+            for member in data:
+                for key, value in data[member]["otherNames"].items():
+                    detected = translator.detect(value)
+                    detected_lang = detected.lang
+                    if isinstance(detected_lang, list):
+                        detected_lang = detected_lang[0]
+                    if detected_lang == "zh-CN":
+                        detected_lang = "zh"
+                    if isinstance(detected_lang, str) and detected_lang != key:
+                        if value == "名井南" and detected_lang == "ja":
+                            continue
+                        elif value == "Dubu (Tofu)" and detected_lang == "zh":
+                            continue
+                        elif value == "平井桃" and detected_lang == "ja":
+                            continue
+                        elif value == "凑崎纱夏" and detected_lang == "ja":
+                            continue
+                        else:
+                            all_lang_valid = False
+                            json.dump(
+                                {
+                                    "value": value,
+                                    "key": key,
+                                    "detected_lang": detected_lang,
+                                },
+                                invalidLang,
+                            )
+                            sys.exit(1)
+                    print("0")
 
-    if all_lang_valid:
-        print("All languages are correct!\n")
-    else:
-        print(f"Incorrect languages found:\n{[x['value'] for x in invalidLang]}\n\n")
-        return
+        if all_lang_valid:
+            print("All languages are correct!\n")
+        else:
+            print(
+                f"Incorrect languages found:\n{[x['value'] for x in invalidLang]}\n\n"
+            )
+            sys.exit(1)
 
 
 if __name__ == "__main__":
