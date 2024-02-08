@@ -64,21 +64,29 @@ async def validateLinks():
 
     all_links_valid = True
     invalidURL = []
+    timeoutURL = []
 
-    async with aiohttp.ClientSession() as session:
+    timeout = aiohttp.ClientTimeout(total=60)  # 60 seconds timeout
+    async with aiohttp.ClientSession(timeout=timeout) as session:
         for url in urls:
-            async with session.get(url) as response:
-                if response.status == 200:
-                    print("0")
-                else:
-                    print(f"Link is invalid: {url}")
-                    all_links_valid = False
-                    invalidURL.append(url)
+            try:
+                async with session.get(url) as response:
+                    if response.status == 200:
+                        print("0")
+                    else:
+                        print(f"Link is invalid: {url}")
+                        all_links_valid = False
+                        invalidURL.append(url)
+            except asyncio.TimeoutError:
+                print(f"Link timed out: {url}")
+                all_links_valid = False
+                timeoutURL.append(url)
 
     if all_links_valid:
         print("All links are valid!\n\n")
     else:
         print(f"Invalid links found:\n{invalidURL}\n\n")
+        print(f"Timed out links found:\n{timeoutURL}\n\n")
         sys.exit(1)
 
 
@@ -92,45 +100,48 @@ async def validateLang():
     with open(file, "r", encoding="utf-8") as file:
         data = json.load(file)
 
-    for x in data:
-        if x == "member":
-            for member in data:
-                for key, value in data[member]["otherNames"].items():
-                    detected = translator.detect(value)
-                    detected_lang = detected.lang
-                    if isinstance(detected_lang, list):
-                        detected_lang = detected_lang[0]
-                    if detected_lang == "zh-CN":
-                        detected_lang = "zh"
-                    if isinstance(detected_lang, str) and detected_lang != key:
-                        if value == "名井南" and detected_lang == "ja":
-                            continue
-                        elif value == "Dubu (Tofu)" and detected_lang == "zh":
-                            continue
-                        elif value == "平井桃" and detected_lang == "ja":
-                            continue
-                        elif value == "凑崎纱夏" and detected_lang == "ja":
-                            continue
-                        else:
-                            all_lang_valid = False
-                            json.dump(
-                                {
-                                    "value": value,
-                                    "key": key,
-                                    "detected_lang": detected_lang,
-                                },
-                                invalidLang,
-                            )
-                            sys.exit(1)
-                    print("0")
+    for x in data["member"]:
+        for key, value in data["member"][x]["otherNames"].items():
+            detected = translator.detect(value)
+            detected_lang = detected.lang
+            if isinstance(detected_lang, list):
+                detected_lang = detected_lang[0]
+            if detected_lang == "zh-CN":
+                detected_lang = "zh"
+            if isinstance(detected_lang, str) and detected_lang != key:
+                if value == "名井南" and detected_lang == "ja" and key == "zh":
+                    continue
+                elif (
+                    value == "Dubu (Tofu)"
+                    and detected_lang == "zh"
+                    and key == "informal"
+                ):
+                    continue
+                elif value == "平井桃" and detected_lang == "ja" and key == "zh":
+                    continue
+                elif value == "凑崎纱夏" and detected_lang == "ja" and key == "zh":
+                    continue
+                elif value == "Katarina Son" and detected_lang == "ja" and key == "en":
+                    continue
+                else:
+                    all_lang_valid = False
+                    print(
+                        json.dumps(
+                            {
+                                "value": value,
+                                "key": key,
+                                "detected_lang": detected_lang,
+                            }
+                        )
+                    )
+                    sys.exit(1)
+            print("0")
 
-        if all_lang_valid:
-            print("All languages are correct!\n")
-        else:
-            print(
-                f"Incorrect languages found:\n{[x['value'] for x in invalidLang]}\n\n"
-            )
-            sys.exit(1)
+    if all_lang_valid:
+        print("All languages are correct!\n")
+    else:
+        print(f"Incorrect languages found:\n{[x['value'] for x in invalidLang]}\n\n")
+        sys.exit(1)
 
 
 if __name__ == "__main__":
