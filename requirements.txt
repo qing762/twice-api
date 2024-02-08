@@ -1,5 +1,5 @@
-aiohttp==3.9.1
+aiohttp==3.9.3
 beautifulsoup4==4.12.3
 googletrans==3.1.0a0
 langcodes==3.3.0
-language-data==1.1
+lxml==4.9.3
