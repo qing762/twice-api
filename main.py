@@ -8,10 +8,372 @@ import sys
 from bs4 import BeautifulSoup
 from googletrans import Translator
 from lxml import etree
+from datetime import datetime
 
 
 class Main:
-    async def Member():
+    async def twice():
+        async with aiohttp.ClientSession() as session:
+            async with session.get("https://twice.fandom.com/wiki/TWICE") as response:
+                slogan = []
+                labels = {}
+                labelsURL = []
+                officialColor = {}
+                website = {}
+                xpath = etree.HTML(await response.text())
+                soup = BeautifulSoup(await response.text(), "html.parser")
+
+                name = (
+                    soup.find(
+                        "h2",
+                        class_="pi-item pi-item-spacing pi-title pi-secondary-background",
+                        attrs={"data-source": "title1"},
+                    ).get_text()
+                    if soup.find(
+                        "h2",
+                        class_="pi-item pi-item-spacing pi-title pi-secondary-background",
+                        attrs={"data-source": "title1"},
+                    )
+                    else "TWICE"
+                )
+
+                origin = (
+                    soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "origin"},
+                    )
+                    .find("div", class_="pi-data-value pi-font")
+                    .get_text()
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "origin"},
+                    )
+                    else None
+                )
+
+                genres = (
+                    soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "genres"},
+                    )
+                    .find("div", class_="pi-data-value pi-font")
+                    .get_text()
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "genres"},
+                    )
+                    else None
+                )
+
+                activeYears = (
+                    soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "active"},
+                    )
+                    .find("div", class_="pi-data-value pi-font")
+                    .get_text()
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "active"},
+                    )
+                    else None
+                )
+
+                for a in (
+                    soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "labels"},
+                    )
+                    .find("div", class_="pi-data-value pi-font")
+                    .find_all("a")
+                ):
+                    labelText = a.get_text()
+                    labelsURL.append(a.get("href"))
+                    for x in labelsURL:
+                        async with session.get(f"https://twice.fandom.com{x}") as res:
+                            beautysoup = BeautifulSoup(await res.text(), "html.parser")
+                            resu = {}
+                            otherNames = (
+                                beautysoup.find(
+                                    "div",
+                                    class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                    attrs={"data-source": "other"},
+                                )
+                                .find("div", class_="pi-data-value pi-font")
+                                .get_text()
+                                .split(", ")
+                                if beautysoup.find(
+                                    "div",
+                                    class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                    attrs={"data-source": "other"},
+                                )
+                                else None
+                            )
+                            founded = (
+                                beautysoup.find(
+                                    "div",
+                                    class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                    attrs={"data-source": "founded"},
+                                )
+                                .find("div", class_="pi-data-value pi-font")
+                                .get_text()
+                                if beautysoup.find(
+                                    "div",
+                                    class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                    attrs={"data-source": "founded"},
+                                )
+                                else None
+                            )
+                            if beautysoup.find(
+                                "div",
+                                class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                attrs={"data-source": "founder"},
+                            ):
+                                founder = [
+                                    text
+                                    for text in (
+                                        beautysoup.find(
+                                            "div",
+                                            class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                            attrs={"data-source": "founder"},
+                                        )
+                                        .find("div", class_="pi-data-value pi-font")
+                                        .stripped_strings
+                                    )
+                                ]
+                            else:
+                                founder = None
+                            location = (
+                                beautysoup.find(
+                                    "div",
+                                    class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                    attrs={"data-source": "location"},
+                                )
+                                .find("div", class_="pi-data-value pi-font")
+                                .get_text()
+                                if beautysoup.find(
+                                    "div",
+                                    class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                    attrs={"data-source": "location"},
+                                )
+                                else None
+                            )
+                            if beautysoup.find(
+                                "div",
+                                class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                attrs={"data-source": "distributors"},
+                            ):
+                                distributor = [
+                                    y
+                                    for y in (
+                                        beautysoup.find(
+                                            "div",
+                                            class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                            attrs={"data-source": "distributors"},
+                                        )
+                                        .find("div", class_="pi-data-value pi-font")
+                                        .stripped_strings
+                                    )
+                                ]
+                            else:
+                                distributor = None
+                            url = (
+                                beautysoup.find(
+                                    "div",
+                                    class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                    attrs={"data-source": "website"},
+                                )
+                                .find("div", class_="pi-data-value pi-font")
+                                .get_text()
+                                if beautysoup.find(
+                                    "div",
+                                    class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                    attrs={"data-source": "website"},
+                                )
+                                else None
+                            )
+
+                            resu = {
+                                "otherNames": otherNames,
+                                "founded": founded,
+                                "founder": founder,
+                                "location": location,
+                                "distributors": distributor,
+                                "website": url,
+                            }
+                    labels[labelText] = resu
+
+                associatedActs = (
+                    list(
+                        (
+                            soup.find(
+                                "div",
+                                class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                attrs={"data-source": "acts"},
+                            ).find("div", class_="pi-data-value pi-font")
+                        ).stripped_strings
+                    )
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "acts"},
+                    )
+                    else None
+                )
+
+                fandomName = (
+                    soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "fandom"},
+                    )
+                    .find("div", class_="pi-data-value pi-font")
+                    .get_text()
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "fandom"},
+                    )
+                    else None
+                )
+
+                if soup.find(
+                    "div",
+                    class_="pi-item pi-data pi-item-spacing pi-border-color",
+                    attrs={"data-source": "official_color"},
+                ):
+                    for x in (
+                        soup.find(
+                            "div",
+                            class_="pi-item pi-data pi-item-spacing pi-border-color",
+                            attrs={"data-source": "official_color"},
+                        )
+                        .find("div", class_="pi-data-value pi-font")
+                        .find_all("table")
+                    ):
+                        for y in x.find("tbody").find("tr").find_all("td"):
+                            if y.find("span"):
+                                officialColorName = y.find("span").get_text()
+                                officialColorCode = (
+                                    y.find("span")["style"].split("; ")[1].strip()
+                                )
+                                officialColor[officialColorName] = officialColorCode
+                else:
+                    officialColor = None
+
+                if (
+                    soup.find("section", class_="pi-item pi-group pi-border-color")
+                    .find(
+                        "table",
+                        class_="pi-horizontal-group pi-horizontal-group-no-labels",
+                    )
+                    .find("tbody")
+                    .find("tr")
+                    .find(
+                        "td",
+                        class_="pi-horizontal-group-item pi-data-value pi-font pi-border-color pi-item-spacing",
+                        attrs={"data-source": "website"},
+                    )
+                ):
+                    for a in (
+                        soup.find("section", class_="pi-item pi-group pi-border-color")
+                        .find(
+                            "table",
+                            class_="pi-horizontal-group pi-horizontal-group-no-labels",
+                        )
+                        .find("tbody")
+                        .find("tr")
+                        .find(
+                            "td",
+                            class_="pi-horizontal-group-item pi-data-value pi-font pi-border-color pi-item-spacing",
+                            attrs={"data-source": "website"},
+                        )
+                        .find_all("a")
+                    ):
+                        key = a.get_text().strip()
+                        if a.next_sibling and "(Closed)" in a.next_sibling:
+                            key += " (Closed)"
+                        website[key] = a.get("href")
+                else:
+                    website = None
+
+                if (
+                    soup.find("div", class_="mw-parser-output")
+                    .find("center", attrs={"style": "justify-content:center;"})
+                    .find_all("table", class_="cquote", attrs={"style": "margin:auto;"})
+                ):
+                    for x in (
+                        soup.find("div", class_="mw-parser-output")
+                        .find("center", attrs={"style": "justify-content:center;"})
+                        .find_all(
+                            "table", class_="cquote", attrs={"style": "margin:auto;"}
+                        )
+                    ):
+                        sloganText = (
+                            x.find("tbody")
+                            .find("tr")
+                            .find(
+                                "td", attrs={"valign": "top", "style": "padding:3px;"}
+                            )
+                        )
+                        sloganText = sloganText.get_text()
+                        slogan.append(sloganText.replace("\n", ""))
+                else:
+                    slogan = None
+
+                if xpath.xpath(
+                    '//*[@id="mw-content-text"]/div/table[3]/tbody/tr[1]/td[2]'
+                ):
+                    groupNameMeaning = (
+                        BeautifulSoup(
+                            etree.tostring(
+                                xpath.xpath(
+                                    '//*[@id="mw-content-text"]/div/table[3]/tbody/tr[1]/td[2]'
+                                )[0],
+                                pretty_print=True,
+                            ).decode(),
+                            "html.parser",
+                        )
+                        .get_text()
+                        .replace("\n", "")
+                    )
+                else:
+                    groupNameMeaning = None
+
+                otherNames = ["NaJeongMoSaJiMiDaChaeTzu", "Teudoongie"]
+
+                fandom = "https://twice.fandom.com/wiki/TWICE"
+
+                data = {
+                    "name": name,
+                    "otherNames": otherNames,
+                    "origin": origin,
+                    "genres": genres,
+                    "activeYears": activeYears,
+                    "labels": labels,
+                    "associatedActs": associatedActs,
+                    "fandomName": fandomName,
+                    "officialColor": officialColor,
+                    "slogan": slogan,
+                    "groupNameMeaning": groupNameMeaning,
+                    "website": website,
+                    "fandom": fandom,
+                }
+
+                for key, value in data.items():
+                    if isinstance(value, str):
+                        data[key] = value.replace("\u2013", "-")
+
+        return data
+
+    async def member():
         memberName = [
             "Nayeon",
             "Jeongyeon",
@@ -30,6 +392,7 @@ class Main:
                 async with session.get(
                     f"https://twice.fandom.com/wiki/{x}"
                 ) as response:
+                    print(f"https://twice.fandom.com/wiki/{x}")
                     soup = BeautifulSoup(await response.text(), "html.parser")
 
                     name = (
@@ -96,6 +459,10 @@ class Main:
                             attrs={"data-source": "birth_date"},
                         )
                         else None
+                    )
+
+                    birthDate = int(
+                        datetime.strptime(birthDate, "%B %d, %Y").timestamp()
                     )
 
                     age = age[:-1] if age else None
@@ -196,29 +563,103 @@ class Main:
                         else None
                     )
 
-                    instagram = (
+                    occupation = (
                         soup.find(
                             "div",
                             class_="pi-item pi-data pi-item-spacing pi-border-color",
-                            attrs={"data-source": "instagram"},
+                            attrs={"data-source": "occupation"},
                         )
                         .find("div", class_="pi-data-value pi-font")
-                        .find(
-                            "a",
-                            class_="external text",
-                            attrs={
-                                "target": "_blank",
-                                "rel": "nofollow noreferrer noopener",
-                            },
-                            href=True,
-                        )["href"]
+                        .text.title()
+                        .split(", ")
                         if soup.find(
                             "div",
                             class_="pi-item pi-data pi-item-spacing pi-border-color",
-                            attrs={"data-source": "instagram"},
+                            attrs={"data-source": "occupation"},
                         )
                         else None
                     )
+
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "instagram"},
+                    ):
+                        instagram = []
+                        for y in (
+                            soup.find(
+                                "div",
+                                class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                attrs={"data-source": "instagram"},
+                            )
+                            .find("div", class_="pi-data-value pi-font")
+                            .find_all(
+                                "a",
+                                class_="external text",
+                                attrs={
+                                    "target": "_blank",
+                                    "rel": "nofollow noreferrer noopener",
+                                },
+                                href=True,
+                            )
+                        ):
+                            instagram.append(y["href"])
+                    else:
+                        instagram = None
+
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "twitter/x"},
+                    ):
+                        twitter = []
+                        for y in (
+                            soup.find(
+                                "div",
+                                class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                attrs={"data-source": "twitter/x"},
+                            )
+                            .find("div", class_="pi-data-value pi-font")
+                            .find_all(
+                                "a",
+                                class_="external text",
+                                attrs={
+                                    "target": "_blank",
+                                    "rel": "nofollow noreferrer noopener",
+                                },
+                                href=True,
+                            )
+                        ):
+                            twitter.append(y["href"])
+                    else:
+                        twitter = None
+
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "zepeto"},
+                    ):
+                        zepeto = []
+                        for y in (
+                            soup.find(
+                                "div",
+                                class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                attrs={"data-source": "zepeto"},
+                            )
+                            .find("div", class_="pi-data-value pi-font")
+                            .find_all(
+                                "a",
+                                class_="external text",
+                                attrs={
+                                    "target": "_blank",
+                                    "rel": "nofollow noreferrer noopener",
+                                },
+                                href=True,
+                            )
+                        ):
+                            zepeto.append(y["href"])
+                    else:
+                        zepeto = None
 
                     position = (
                         soup.find(
@@ -228,12 +669,13 @@ class Main:
                         )
                         .find("div", class_="pi-data-value pi-font")
                         .text.replace("  ", ", ")
+                        .split(", ")
                         if soup.find(
                             "div",
                             class_="pi-item pi-data pi-item-spacing pi-border-color",
                             attrs={"data-source": "position"},
                         )
-                        else None
+                        else []
                     )
 
                     color = (
@@ -277,7 +719,7 @@ class Main:
                             attrs={"data-source": "emoji"},
                         )
                         .find("div", class_="pi-data-value pi-font")
-                        .text
+                        .text.split(", ")
                         if soup.find(
                             "div",
                             class_="pi-item pi-data pi-item-spacing pi-border-color",
@@ -293,7 +735,7 @@ class Main:
                             attrs={"data-source": "instruments"},
                         )
                         .find("div", class_="pi-data-value pi-font")
-                        .text
+                        .text.split(", ")
                         if soup.find(
                             "div",
                             class_="pi-item pi-data pi-item-spacing pi-border-color",
@@ -318,14 +760,89 @@ class Main:
                         else None
                     )
 
-                    associatedActs = ", ".join(
-                        link.text
-                        for link in soup.find(
+                    associatedActs = list(
+                        (
+                            soup.find(
+                                "div",
+                                class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                attrs={"data-source": "associated"},
+                            ).find("div", class_="pi-data-value pi-font")
+                        ).stripped_strings
+                        if soup.find(
                             "div",
                             class_="pi-item pi-data pi-item-spacing pi-border-color",
                             attrs={"data-source": "associated"},
-                        ).find_all("a")
+                        ).find("div", class_="pi-data-value pi-font")
+                        else None
                     )
+
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "partner"},
+                    ):
+                        partnerInfo = (
+                            soup.find(
+                                "div",
+                                class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                attrs={"data-source": "partner"},
+                            )
+                            .find("div", class_="pi-data-value pi-font")
+                            .stripped_strings
+                        )
+                        partnerInfo = list(partnerInfo)
+                        partner = {
+                            "name": partnerInfo[0],
+                            "years": partnerInfo[1].strip("()"),
+                        }
+                    else:
+                        partner = None
+
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "family"},
+                    ):
+                        family = []
+                        for y in soup.find(
+                            "div",
+                            class_="pi-item pi-data pi-item-spacing pi-border-color",
+                            attrs={"data-source": "family"},
+                        ).find_all("div", class_="pi-data-value pi-font"):
+                            familyList = y.get_text().split(")")
+                            familyList = [i for i in familyList if i]
+                            for i in range(len(familyList)):
+                                familyName, relationship = familyList[i].split(" (")
+                                family.append(
+                                    {
+                                        "name": familyName.strip(),
+                                        "relationship": relationship.strip().capitalize(),
+                                    }
+                                )
+
+                    if soup.find(
+                        "div",
+                        class_="pi-item pi-data pi-item-spacing pi-border-color",
+                        attrs={"data-source": "relatives"},
+                    ):
+                        relatives = []
+                        for y in soup.find(
+                            "div",
+                            class_="pi-item pi-data pi-item-spacing pi-border-color",
+                            attrs={"data-source": "relatives"},
+                        ).find_all("div", class_="pi-data-value pi-font"):
+                            relativesList = y.get_text().split(")")
+                            relativesList = [i for i in relativesList if i]
+                            for i in range(len(relativesList)):
+                                relativesName, relationship = relativesList[i].split(
+                                    " ("
+                                )
+                                relatives.append(
+                                    {
+                                        "name": relativesName.strip(),
+                                        "relationship": relationship.strip().capitalize(),
+                                    }
+                                )
 
                     signature = (
                         soup.find(
@@ -457,9 +974,22 @@ class Main:
                     "yearsActive": yearsActive,
                     "bloodType": bloodType,
                     "MBTI": MBTI,
-                    "instagram": instagram,
+                    "occupation": occupation,
                     "position": position,
                     "color": color,
+                    "instagram": instagram,
+                    "twitter": twitter,
+                    "zepeto": zepeto,
+                    "emoji": emoji,
+                    "instrument": instrument,
+                    "agency": agency,
+                    "associatedActs": associatedActs,
+                    "images": images,
+                    "signature": signature,
+                    "facts": facts,
+                    "partner": partner,
+                    "family": family,
+                    "relatives": relatives,
                     "lovely": {
                         "name": lovelyName,
                         "height": lovelyHeight,
@@ -469,15 +999,12 @@ class Main:
                         "picture": lovelyPicture,
                         "banner": lovelyBanner,
                     },
-                    "emoji": emoji,
-                    "instrument": instrument,
-                    "agency": agency,
-                    "associatedActs": associatedActs,
-                    "signature": signature,
-                    "images": images,
-                    "facts": facts,
                     "fandom": fandom,
                 }
+
+                for key, value in data.items():
+                    if isinstance(value, str):
+                        data[key] = value.replace("\u2013", "-")
 
                 memberData[x] = data
 
@@ -651,6 +1178,10 @@ class Main:
                     "fandom": z,
                 }
 
+                for key, value in data.items():
+                    if isinstance(value, str):
+                        data[key] = value.replace("\u2013", "-")
+
                 shipsData[name] = data
 
         return shipsData
@@ -658,9 +1189,10 @@ class Main:
 
 if __name__ == "__main__":
     try:
-        memberData = asyncio.run(Main.Member())
+        twiceData = asyncio.run(Main.twice())
+        memberData = asyncio.run(Main.member())
         shipsData = asyncio.run(Main.ships())
-        combinedData = {"member": memberData, "ships": shipsData}
+        combinedData = {"twice": twiceData, "member": memberData, "ships": shipsData}
         with open("twice.json", "w", encoding="utf-8") as f:
             json.dump(combinedData, f, indent=4)
     except KeyboardInterrupt:

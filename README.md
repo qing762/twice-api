@@ -4,7 +4,7 @@
 > [!WARNING]
 > Please be advised that usage of this tool is entirely at your own risk. I assumes no responsibility for any adverse consequences that may arise from its use, and users are encouraged to exercise caution and exercise their own judgment in utilizing this tool.
 
-# Twice API
+# TWICE API
 
 An API that scrapes data from [Twice Wiki](https://twice.fandom.com) and convert into JSON format.
 

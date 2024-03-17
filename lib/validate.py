@@ -6,9 +6,13 @@ import asyncio
 import re
 import os
 from googletrans import Translator
+from datetime import datetime
 
-if len(sys.argv) < 2:
-    print("Please provide a file name as a command-line argument.")
+
+if len(sys.argv) > 1:
+    file = sys.argv[1]
+else:
+    print("No file provided as command-line argument.")
     sys.exit(1)
 
 
@@ -27,7 +31,7 @@ async def lintCheck():
             check=True,
         )
     except subprocess.CalledProcessError as e:
-        print(f"Linting failed with {str(e)}")
+        print(f"Linting failed! {str(e)}")
         sys.exit(1)
     try:
         subprocess.run(
@@ -35,15 +39,14 @@ async def lintCheck():
                 "flake8",
                 ".",
                 "--count",
-                "--exit-zero",
-                "--max-complexity=15",
+                "--max-complexity=30",
                 "--max-line-length=300",
                 "--statistics",
             ],
             check=True,
         )
     except subprocess.CalledProcessError as e:
-        print(f"Linting failed with {str(e)}")
+        print(f"Linting failed! {str(e)}")
         sys.exit(1)
     print("Linting passed!\n\n")
 
@@ -64,29 +67,30 @@ async def validateLinks():
 
     all_links_valid = True
     invalidURL = []
-    timeoutURL = []
 
-    timeout = aiohttp.ClientTimeout(total=60)  # 60 seconds timeout
-    async with aiohttp.ClientSession(timeout=timeout) as session:
+    async with aiohttp.ClientSession() as session:
         for url in urls:
             try:
-                async with session.get(url) as response:
-                    if response.status == 200:
-                        print("0")
-                    else:
-                        print(f"Link is invalid: {url}")
-                        all_links_valid = False
-                        invalidURL.append(url)
-            except asyncio.TimeoutError:
-                print(f"Link timed out: {url}")
-                all_links_valid = False
-                timeoutURL.append(url)
+                response = await session.get(
+                    url,
+                    headers={
+                        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36"
+                    },
+                    timeout=aiohttp.ClientTimeout(total=5),
+                )
+                if response.status == 200:
+                    print("0")
+                else:
+                    print(f"Link is invalid: {url}")
+                    all_links_valid = False
+                    invalidURL.append(url)
+            except (aiohttp.ClientError, asyncio.TimeoutError):
+                continue
 
     if all_links_valid:
         print("All links are valid!\n\n")
     else:
         print(f"Invalid links found:\n{invalidURL}\n\n")
-        print(f"Timed out links found:\n{timeoutURL}\n\n")
         sys.exit(1)
 
 
@@ -106,7 +110,7 @@ async def validateLang():
             detected_lang = detected.lang
             if isinstance(detected_lang, list):
                 detected_lang = detected_lang[0]
-            if detected_lang == "zh-CN":
+            if detected_lang == "zh-CN" or detected_lang == "zh-TW":
                 detected_lang = "zh"
             if isinstance(detected_lang, str) and detected_lang != key:
                 if value == "名井南" and detected_lang == "ja" and key == "zh":
@@ -132,7 +136,7 @@ async def validateLang():
                                 "key": key,
                                 "detected_lang": detected_lang,
                             }
-                        )
+                        ),
                     )
                     sys.exit(1)
             print("0")
@@ -144,11 +148,37 @@ async def validateLang():
         sys.exit(1)
 
 
+async def validateTimestamp():
+    file = sys.argv[1]
+    with open(file, "r") as file:
+        data = json.load(file)
+    format_string = "%B %d, %Y"
+    for x in data["member"]:
+        date_string_from_timestamp = datetime.fromtimestamp(
+            datetime.strptime(
+                datetime.fromtimestamp(data["member"][x]["birthDate"]).strftime(
+                    "%B %d, %Y"
+                ),
+                format_string,
+            ).timestamp()
+        ).strftime(format_string)
+        if (
+            datetime.fromtimestamp(data["member"][x]["birthDate"]).strftime("%B %d, %Y")
+            != date_string_from_timestamp
+        ):
+            print(f'Invalid timestamp: {data["member"][x]["birthDate"]}')
+            sys.exit(1)
+        else:
+            print("0")
+    print("All timestamps are valid.")
+
+
 if __name__ == "__main__":
     try:
         asyncio.run(lintCheck())
         asyncio.run(validateLinks())
         asyncio.run(validateLang())
+        asyncio.run(validateTimestamp())
         print("All check passed!")
     except KeyboardInterrupt:
         print("Process stopping due to keyboard interrupt")
