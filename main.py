@@ -392,7 +392,6 @@ class Main:
                 async with session.get(
                     f"https://twice.fandom.com/wiki/{x}"
                 ) as response:
-                    print(f"https://twice.fandom.com/wiki/{x}")
                     soup = BeautifulSoup(await response.text(), "html.parser")
 
                     name = (
