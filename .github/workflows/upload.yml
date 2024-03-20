@@ -50,7 +50,7 @@ jobs:
           tag_name: ${{ github.ref_name }}
 
   deploy:
-    if: github.ref == 'refs/heads/update' && github.repository == 'qing762/twice-api'
+    if: github.ref == 'refs/heads/main' && github.repository == 'qing762/twice-api'
     runs-on: ubuntu-latest
     steps:
       - name: Set up Python 3.10
