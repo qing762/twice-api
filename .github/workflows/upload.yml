@@ -53,6 +53,9 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.repository == 'qing762/twice-api'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
         with:
@@ -64,7 +67,7 @@ jobs:
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Ensure code is working as expected
+      - name: Upload code
         run: |
           python lib/upload.py
         env:
