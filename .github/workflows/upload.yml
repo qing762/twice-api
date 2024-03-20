@@ -1,4 +1,4 @@
-name: Github Actions
+name: Upload API to /api/twice endpoint
 
 on:
   schedule:
