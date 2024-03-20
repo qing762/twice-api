@@ -34,6 +34,12 @@ jobs:
         run: |
           python lib/validate.py twice.json
 
+      - name: Upload twice.json
+        uses: actions/upload-artifact@v2
+        with:
+          name: twice.json
+          path: twice.json
+
       - name: Zip repo files
         uses: papeloto/action-zip@v1
         with:
@@ -50,6 +56,7 @@ jobs:
           tag_name: ${{ github.ref_name }}
 
   deploy:
+    needs: build
     if: github.ref == 'refs/heads/main' && github.repository == 'qing762/twice-api'
     runs-on: ubuntu-latest
     steps:
@@ -66,6 +73,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Download twice.json
+        uses: actions/download-artifact@v2
+        with:
+          name: twice.json
+          path: .
 
       - name: Upload code to API
         run: |
