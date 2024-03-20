@@ -67,7 +67,7 @@ jobs:
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Upload code
+      - name: Upload code to API
         run: |
           python lib/upload.py
         env:

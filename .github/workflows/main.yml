@@ -57,7 +57,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-        
+
       - name: Set up Python 3.10
         uses: actions/setup-python@v2
         with:
@@ -69,8 +69,10 @@ jobs:
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: Ensure code is working as expected
+      - name: Upload code to API
         run: |
+          cd $GITHUB_WORKSPACE
+          pwd
           python lib/upload.py
         env:
           apiUploadURL: ${{ secrets.apiUploadURL }}
