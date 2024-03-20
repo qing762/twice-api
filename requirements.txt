@@ -1,4 +1,9 @@
+<<<<<<< Updated upstream
 aiohttp==3.9.1
+=======
+aiofiles==23.2.1
+aiohttp==3.9.3
+>>>>>>> Stashed changes
 beautifulsoup4==4.12.3
 googletrans==3.1.0a0
 langcodes==3.3.0

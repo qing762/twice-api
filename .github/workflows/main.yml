@@ -32,7 +32,7 @@ jobs:
         run: |
           python main.py
 
-      - name: Lint & Validate links and language
+      - name: Lint & Validate links, language & timestamp
         run: |
           python lib/validate.py twice.json
 
