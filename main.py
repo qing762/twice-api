@@ -393,7 +393,8 @@ class Main:
                     f"https://twice.fandom.com/wiki/{x}"
                 ) as response:
                     soup = BeautifulSoup(await response.text(), "html.parser")
-
+                    family = []
+                    relatives = []
                     name = (
                         soup.find(
                             "div",
