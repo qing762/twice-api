@@ -117,7 +117,7 @@ async def validateLang():
                     continue
                 elif (
                     value == "Dubu (Tofu)"
-                    and detected_lang == "zh"
+                    and detected_lang in ["zh", "ja"]
                     and key == "informal"
                 ):
                     continue
