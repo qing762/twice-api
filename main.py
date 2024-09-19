@@ -1151,20 +1151,23 @@ class Main:
                         ).get_text()
                         facts = [f for f in factsSearch.split("\n") if f]
 
-                    images = (
-                        soup.find(
-                            "figure",
-                            class_="pi-item pi-image",
-                            attrs={"data-source": "image"},
-                        ).find("a", class_="image image-thumbnail")["href"]
-                        + "&format=original"
-                        if soup.find(
-                            "figure",
-                            class_="pi-item pi-image",
-                            attrs={"data-source": "image"},
-                        ).find("a", class_="image image-thumbnail")
-                        else None
-                    )
+                    try:
+                        images = (
+                            soup.find(
+                                "figure",
+                                class_="pi-item pi-image",
+                                attrs={"data-source": "image"},
+                            ).find("a", class_="image image-thumbnail")["href"]
+                            + "&format=original"
+                            if soup.find(
+                                "figure",
+                                class_="pi-item pi-image",
+                                attrs={"data-source": "image"},
+                            ).find("a", class_="image image-thumbnail")
+                            else None
+                        )
+                    except AttributeError:
+                        images = None
 
                 data = {
                     "name": name,
