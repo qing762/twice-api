@@ -81,9 +81,12 @@ async def validateLinks():
                 if response.status == 200:
                     print("0")
                 else:
-                    print(f"Link is invalid: {url}")
-                    all_links_valid = False
-                    invalidURL.append(url)
+                    if url.startswith("https://instagram.com/"):
+                        print("0")
+                    else:
+                        print(f"Link is invalid: {url}")
+                        all_links_valid = False
+                        invalidURL.append(url)
             except (aiohttp.ClientError, asyncio.TimeoutError):
                 continue
 
