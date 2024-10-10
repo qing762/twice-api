@@ -65,7 +65,7 @@ async def validateLinks():
     )
     urls = re.findall(url_pattern, data_str)
 
-    all_links_valid = True
+    allLinksValid = True
     invalidURL = []
 
     async with aiohttp.ClientSession() as session:
@@ -80,17 +80,16 @@ async def validateLinks():
                 )
                 if response.status == 200:
                     print("0")
+                elif response.status != 200 and url.startswith("https://www.instagram.com"):
+                    print(f"Detected Instagram link and it returns with code {response.status}, skipping validation since it could be Github Actions IP blocked.")
                 else:
-                    if url.startswith("https://instagram.com/"):
-                        print("0")
-                    else:
-                        print(f"Link is invalid: {url}")
-                        all_links_valid = False
-                        invalidURL.append(url)
+                    print(f"Link is invalid: {url}")
+                    allLinksValid = False
+                    invalidURL.append(url)
             except (aiohttp.ClientError, asyncio.TimeoutError):
                 continue
 
-    if all_links_valid:
+    if allLinksValid:
         print("All links are valid!\n\n")
     else:
         print(f"Invalid links found:\n{invalidURL}\n\n")
@@ -101,7 +100,7 @@ async def validateLang():
     print("Validating language of output json")
     file = sys.argv[1]
     translator = Translator()
-    all_lang_valid = True
+    allLangValid = True
     invalidLang = {}
 
     with open(file, "r", encoding="utf-8") as file:
@@ -131,7 +130,7 @@ async def validateLang():
                 elif value == "Katarina Son" and detected_lang == "ja" and key == "en":
                     continue
                 else:
-                    all_lang_valid = False
+                    allLangValid = False
                     print(
                         json.dumps(
                             {
@@ -144,7 +143,7 @@ async def validateLang():
                     sys.exit(1)
             print("0")
 
-    if all_lang_valid:
+    if allLangValid:
         print("All languages are correct!\n")
     else:
         print(f"Incorrect languages found:\n{[x['value'] for x in invalidLang]}\n\n")
