@@ -119,7 +119,7 @@ async def validateLang():
                     continue
                 elif (
                     value == "Dubu (Tofu)"
-                    and detected_lang in ["zh", "ja"]
+                    and detected_lang in ["zh", "ja", "ha"]
                     and key == "informal"
                 ):
                     continue
@@ -128,6 +128,8 @@ async def validateLang():
                 elif value == "凑崎纱夏" and detected_lang == "ja" and key == "zh":
                     continue
                 elif value == "Katarina Son" and detected_lang == "ja" and key == "en":
+                    continue
+                elif value == "Sharon Myoui" and detected_lang == "ja" and key == "en":
                     continue
                 else:
                     allLangValid = False
