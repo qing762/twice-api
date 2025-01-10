@@ -82,6 +82,8 @@ async def validateLinks():
                     print("0")
                 elif response.status != 200 and url.startswith("https://www.instagram.com"):
                     print(f"Detected Instagram link and it returns with code {response.status}, skipping validation since it could be Github Actions IP blocked.")
+                elif response.status != 200 and url.startswith("https://www.dailymotion.com"):
+                    print(f"Detected Dailymotion link and it returns with code {response.status}, skipping validation since it could be Github Actions IP blocked.")
                 else:
                     print(f"Link is invalid: {url}")
                     allLinksValid = False
