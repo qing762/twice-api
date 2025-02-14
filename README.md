@@ -14,7 +14,7 @@ It scrapes data from [Twice Wiki](https://twice.fandom.com) and format/beautify 
 ### Get TWICE Data
 
 ```http
-GET /api/twice
+GET https://qing762.is-a.dev/api/twice
 ```
 
 Returns the entire TWICE data.
@@ -54,7 +54,7 @@ Returns the entire TWICE data.
 ### Get TWICE Group Data
 
 ```http
-GET /api/twice/group
+GET https://qing762.is-a.dev/api/twice/group
 ```
 
 Returns the TWICE group data.
@@ -82,7 +82,7 @@ Returns the TWICE group data.
 ### Get TWICE Members
 
 ```http
-GET /api/twice/members
+GET https://qing762.is-a.dev/api/twice/members
 ```
 
 Returns the list of TWICE members.
@@ -100,7 +100,7 @@ Returns the list of TWICE members.
 ### Get Specific TWICE Member Data
 
 ```http
-GET /api/twice/members/{member}
+GET https://qing762.is-a.dev/api/twice/members/{member}
 ```
 
 Returns data for a specific TWICE member.
@@ -186,7 +186,7 @@ Returns data for a specific TWICE member.
 ### Get TWICE Ships
 
 ```http
-GET /api/twice/ships
+GET https://qing762.is-a.dev/api/twice/ships
 ```
 
 Returns the list of TWICE ships.
@@ -204,7 +204,7 @@ Returns the list of TWICE ships.
 ### Get Specific TWICE Ship Data
 
 ```http
-GET /api/twice/ships/{ship}
+GET https://qing762.is-a.dev/api/twice/ships/{ship}
 ```
 
 Returns data for a specific TWICE ship.
