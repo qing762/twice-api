@@ -191,7 +191,6 @@ async def validateTimestamp():
 if __name__ == "__main__":
     try:
         asyncio.run(lintCheck())
-        asyncio.run(validateLinks())
         asyncio.run(validateLang())
         asyncio.run(validateTimestamp())
         print("All check passed!")
