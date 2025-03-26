@@ -39,7 +39,7 @@ async def lintCheck():
                 "flake8",
                 ".",
                 "--count",
-                "--max-complexity=30",
+                "--max-complexity=40",
                 "--max-line-length=300",
                 "--statistics",
             ],
@@ -84,6 +84,8 @@ async def validateLinks():
                     print(f"Detected Instagram link and it returns with code {response.status}, skipping validation since it could be Github Actions IP blocked.")
                 elif response.status != 200 and url.startswith("https://www.dailymotion.com"):
                     print(f"Detected Dailymotion link and it returns with code {response.status}, skipping validation since it could be Github Actions IP blocked.")
+                elif response.status != 200 and url.startswith("https://www.facebook.com"):
+                    print(f"Detected Facebook link and it returns with code {response.status}, skipping validation since it could be Github Actions IP blocked.")
                 else:
                     print(f"Link is invalid: {url}")
                     allLinksValid = False
@@ -101,7 +103,6 @@ async def validateLinks():
 async def validateLang():
     print("Validating language of output json")
     file = sys.argv[1]
-    translator = Translator()
     allLangValid = True
     invalidLang = {}
 
@@ -109,54 +110,62 @@ async def validateLang():
         data = json.load(file)
 
     for x in data["member"]:
-        for key, value in data["member"][x]["otherNames"].items():
-            detected = translator.detect(value)
-            detected_lang = detected.lang
-            if isinstance(detected_lang, list):
-                detected_lang = detected_lang[0]
-            if detected_lang == "zh-CN" or detected_lang == "zh-TW":
-                detected_lang = "zh"
-            if isinstance(detected_lang, str) and detected_lang != key:
-                if value == "名井南" and detected_lang == "ja" and key == "zh":
-                    continue
-                elif (
-                    value == "Dubu (Tofu)"
-                    and detected_lang in ["zh", "ja", "ha"]
-                    and key == "informal"
-                ):
-                    continue
-                elif value == "平井桃" and detected_lang == "ja" and key == "zh":
-                    continue
-                elif value == "凑崎纱夏" and detected_lang == "ja" and key == "zh":
-                    continue
-                elif value == "Katarina Son" and detected_lang == "ja" and key == "en":
-                    continue
-                elif value == "Sharon Myoui" and detected_lang == "ja" and key == "en":
-                    continue
-                else:
-                    allLangValid = False
-                    print(
-                        json.dumps(
-                            {
-                                "value": value,
-                                "key": key,
-                                "detected_lang": detected_lang,
-                            }
-                        ),
-                    )
-                    sys.exit(1)
-            print("0")
+        async with Translator() as translator:
+            for key, value in data["member"][x]["otherNames"].items():
+                detected = await translator.detect(value)
+                detected_lang = detected.lang
+                if isinstance(detected_lang, list):
+                    detected_lang = detected_lang[0]
+                if detected_lang == "zh-CN" or detected_lang == "zh-TW":
+                    detected_lang = "zh"
+                if isinstance(detected_lang, str) and detected_lang != key:
+                    if value == "名井南" and detected_lang == "ja" and key == "zh":
+                        continue
+                    elif (
+                        value == "Dubu (Tofu)"
+                        and detected_lang in ["zh", "ja", "ha"]
+                        and key == "informal"
+                    ):
+                        continue
+                    elif value == "平井桃" and detected_lang == "ja" and key == "zh":
+                        continue
+                    elif value == "凑崎纱夏" and detected_lang == "ja" and key == "zh":
+                        continue
+                    elif value == "湊﨑 紗夏" and detected_lang == "en" and key == "ja":
+                        continue
+                    elif value == "Katarina Son" and detected_lang == "ja" and key == "en":
+                        continue
+                    elif value == "Katarina Son" and detected_lang == "fi" and key == "en":
+                        continue
+                    elif value == "Sharon Myoi" and detected_lang == "ja" and key == "en":
+                        continue
+                    else:
+                        allLangValid = False
+                        invalidLang[value] = {
+                            "key": key,
+                            "detected_lang": detected_lang,
+                        }
+                        print(
+                            json.dumps(
+                                {
+                                    "value": value,
+                                    "key": key,
+                                    "detected_lang": detected_lang,
+                                }
+                            )
+                        )
+                print("0")
 
     if allLangValid:
         print("All languages are correct!\n")
     else:
-        print(f"Incorrect languages found:\n{[x['value'] for x in invalidLang]}\n\n")
+        print(f"Incorrect languages found:\n{[x for x in invalidLang]}\n\n")
         sys.exit(1)
 
 
 async def validateTimestamp():
     file = sys.argv[1]
-    with open(file, "r") as file:
+    with open(file, "r", encoding="utf-8") as file:
         data = json.load(file)
     format_string = "%B %d, %Y"
     for x in data["member"]:

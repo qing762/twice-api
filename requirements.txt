@@ -1,7 +1,6 @@
-aiofiles==23.2.1
-aiohttp==3.9.5
-beautifulsoup4==4.12.3
-googletrans==4.0.0rc1
-langcodes==3.4.0
-lxml==4.9.3
-language-data==1.2
+aiofiles==24.1.0
+aiohttp==3.11.9
+beautifulsoup4==4.13.3
+googletrans==4.0.2
+langcodes==3.5.0
+language-data==1.3
