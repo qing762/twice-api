@@ -25,27 +25,165 @@ Returns the entire TWICE data.
 {
     "twice": {
         "name": "TWICE",
-        "otherNames": ["트와이스"],
-        "origin": "South Korea",
-        "genres": ["K-pop", "J-pop"],
-        "activeYears": "2015–present",
-        "labels": ["JYP Entertainment"],
-        "associatedActs": ["JYP Nation"],
+        "otherNames": [ ...],
+        "origin": "Seoul, South Korea",
+        "genres": "K-pop, J-pop",
+        "activeYears": "2015-present",
+        "labels": {
+            "JYP Entertainment": {
+                "otherNames": null,
+                "founded": "April 25, 1997",
+                "founder": ["J.Y. Park (Park Jin Young)"],
+                "location": "Seoul, South Korea",
+                "distributors": ["KT Music"],
+                "website": "https://www.jype.com/"
+            },
+            ...
+        },
+        "associatedActs": ["SIXTEEN", "JYP Nation", ...],
         "fandomName": "ONCE",
-        "officialColor": "Apricot & Neon Magenta",
-        "slogan": "One in a Million",
-        "groupNameMeaning": "The act of touching people's hearts twice: once through the ears, and once again through the eyes.",
-        "website": "http://twice.jype.com",
-        "fandom": "http://once.jype.com"
+        "officialColor": {
+            "Neon Magenta": "#FF5FA2",
+            "Apricot": "#FCC89B"
+        },
+        "slogan": [
+            "One in a Million! 안녕하세요, 트와이스 임니다!",
+            ...
+        ],
+        "groupNameMeaning": "One in a Million! Hi, we are TWICE!",
+        "website": {},
+        "sns": {
+            "Dailymotion (Inactive)": "https://www.dailymotion.com/TWICEonAir",
+            "Facebook": "https://www.facebook.com/JYPETWICE",
+            "Instagram": "https://www.instagram.com/twicetagram",
+            "Instagram (Japan)": "https://www.instagram.com/jypetwice_japan",
+            "Line (Japan)": "https://line.me/R/ti/p/@twice_japan",
+            "Snapchat (Inactive)": "https://snapchat.com/add/twiceofficial",
+            "TikTok": "https://www.tiktok.com/@twice_tiktok_official",
+            "TikTok (Japan)": "https://www.tiktok.com/@twice_tiktok_officialjp",
+            "Twitter": "https://www.twitter.com/JYPETWICE_JAPAN",
+            "VLive (Inactive)": "https://www.channels.vlive.tv/EDBF",
+            "YouTube": "https://www.youtube.com/@TWICE",
+            "YouTube (Japan)": "https://www.youtube.com/@twicejapan_official",
+            "Zepeto": "https://web.zepeto.me/share/user/profile/jypetwice"
+        },
+        "images": [
+            "https://static.wikia.nocookie.net/twicenation/images/5/58/Strategy_Step_1_1.jpg/revision/latest?cb=20241116002141&format=original",
+            ...
+        ],
+        "fandom": "https://twice.fandom.com/wiki/TWICE"
     },
     "member": {
-        "Nayeon": { ... },
+        "Nayeon": {
+            "name": "Im Na-yeon",
+            "otherNames": {
+                "zh": "林娜璉",
+                "ja": "ナヨン",
+                "ko": "임나연"
+            },
+            "birthDate": 811728000,
+            "age": "29",
+            "birthPlace": "Seoul, South Korea",
+            "height": "163cm (5'4\")",
+            "weight": "48kg (106lbs)",
+            "yearsActive": "2015-present",
+            "bloodType": "A",
+            "MBTI": "ISTP",
+            "occupation": [
+                "Singer",
+                ...
+            ],
+            "position": [
+                "Lead Dancer",
+                "Lead Vocalist",
+                ...
+            ],
+            "color": "Sky Blue",
+            "instagram": [
+                "https://www.instagram.com/nayeonyny/"
+            ],
+            "twitter": null,
+            "zepeto": [
+                "https://user.zepeto.me/nayeon"
+            ],
+            "emoji": [
+                "🐰"
+            ],
+            "instrument": null,
+            "agency": "JYP Entertainment",
+            "associatedActs": [
+                "TWICE",
+                "JYP Nation",
+                "SIXTEEN"
+            ],
+            "images": [
+                "https://static.wikia.nocookie.net/twicenation/images/a/a7/Nayeon_Strategy_Step_1_1.jpg/revision/latest?cb=20241116002546&format=original",
+                ...
+            ],
+            "signature": "https://static.wikia.nocookie.net/twicenation/images/4/4b/Nayeon_Signature.png/revision/latest?cb=20200717041312&format=original",
+            "facts": [
+                "Nayeon was originally set to debut in the girl group 6mix with Jeongyeon, Jihyo and Sana.",
+                ...
+            ],
+            "partner": null,
+            "family": [
+                {
+                    "name": "Cheon Se-ah",
+                    "relationship": "Mother"
+                },
+                ...
+            ],
+            "relatives": [
+                {
+                    "name": "Ji Yun Seo",
+                    "relationship": "Maternal cousin"
+                }
+            ],
+            "lovely": {
+                "name": "Navely",
+                "height": "23cm",
+                "weight": "1.3kg",
+                "personality": "Positive",
+                "description": "'Loves kids!'",
+                "picture": "https://static.wikia.nocookie.net/twicenation/images/5/5e/Navely.jpg/revision/latest?cb=20200514115137&format=original",
+                "banner": "https://static.wikia.nocookie.net/twicenation/images/f/f2/Navely.gif/revision/latest?cb=20190221012000&format=original"
+            },
+            "fandom": "https://twice.fandom.com/wiki/Nayeon"
+        },
         "Jeongyeon": { ... },
         ...
     },
     "ships": {
-        "2Yeon": { ... },
-        "SaTzu": { ... },
+        "230s": {
+            "name": "230s",
+            "shipped": [
+                "Jeongyeon",
+                ...
+            ],
+            "otherNames": [
+                "No TG"
+                ...
+            ],
+            "rivals": [
+                "2na",
+                ...
+            ],
+            "similarities": [
+                "Both are vocalists",
+                ...
+            ],
+            "differences": [
+                "Jeongyeon was born in South Korea while Sana was born in Japan",
+                ...
+            ],
+            "facts": [
+                "They didn't wear microphones in \"TWICE TV5 -TWICE in SWITZERLAND EP. 07\" because of their loud voices",
+                ...
+            ],
+            "images": "https://static.wikia.nocookie.net/twicenation/images/5/52/230s_Profile-.jpeg/revision/latest?cb=20240224195502&format=original",
+            "fandom": "https://twice.fandom.com/wiki/230s"
+        },
+        "2yeon": { ... },
         ...
     }
 }
@@ -64,18 +202,53 @@ Returns the TWICE group data.
 ```json
 {
     "name": "TWICE",
-    "otherNames": ["트와이스"],
-    "origin": "South Korea",
-    "genres": ["K-pop", "J-pop"],
-    "activeYears": "2015–present",
-    "labels": ["JYP Entertainment"],
-    "associatedActs": ["JYP Nation"],
+    "otherNames": [ ...],
+    "origin": "Seoul, South Korea",
+    "genres": "K-pop, J-pop",
+    "activeYears": "2015-present",
+    "labels": {
+        "JYP Entertainment": {
+            "otherNames": null,
+            "founded": "April 25, 1997",
+            "founder": ["J.Y. Park (Park Jin Young)"],
+            "location": "Seoul, South Korea",
+            "distributors": ["KT Music"],
+            "website": "https://www.jype.com/"
+        },
+        ...
+    },
+    "associatedActs": ["SIXTEEN", "JYP Nation", ...],
     "fandomName": "ONCE",
-    "officialColor": "Apricot & Neon Magenta",
-    "slogan": "One in a Million",
-    "groupNameMeaning": "The act of touching people's hearts twice: once through the ears, and once again through the eyes.",
-    "website": "http://twice.jype.com",
-    "fandom": "http://once.jype.com"
+    "officialColor": {
+        "Neon Magenta": "#FF5FA2",
+        "Apricot": "#FCC89B"
+    },
+    "slogan": [
+        "One in a Million! 안녕하세요, 트와이스 임니다!",
+        ...
+    ],
+    "groupNameMeaning": "One in a Million! Hi, we are TWICE!",
+    "website": {},
+    "sns": {
+        "Dailymotion (Inactive)": "https://www.dailymotion.com/TWICEonAir",
+        "Facebook": "https://www.facebook.com/JYPETWICE",
+        "Instagram": "https://www.instagram.com/twicetagram",
+        "Instagram (Japan)": "https://www.instagram.com/jypetwice_japan",
+        "Line (Japan)": "https://line.me/R/ti/p/@twice_japan",
+        "Snapchat (Inactive)": "https://snapchat.com/add/twiceofficial",
+        "TikTok": "https://www.tiktok.com/@twice_tiktok_official",
+        "TikTok (Japan)": "https://www.tiktok.com/@twice_tiktok_officialjp",
+        "Twitter": "https://www.twitter.com/JYPETWICE_JAPAN",
+        "VLive (Inactive)": "https://www.channels.vlive.tv/EDBF",
+        "YouTube": "https://www.youtube.com/@TWICE",
+        "YouTube (Japan)": "https://www.youtube.com/@twicejapan_official",
+        "Zepeto": "https://web.zepeto.me/share/user/profile/jypetwice"
+    },
+    "images": [
+        "https://static.wikia.nocookie.net/twicenation/images/5/58/Strategy_Step_1_1.jpg/revision/latest?cb=20241116002141&format=original",
+        ...
+    ],
+    "fandom": "https://twice.fandom.com/wiki/TWICE"
 }
 ```
 
@@ -91,9 +264,84 @@ Returns the list of TWICE members.
 
 ```json
 {
-    "Nayeon": { ... },
-    "Jeongyeon": { ... },
-    ...
+    "Nayeon": {
+            "name": "Im Na-yeon",
+            "otherNames": {
+                "zh": "林娜璉",
+                "ja": "ナヨン",
+                "ko": "임나연"
+            },
+            "birthDate": 811728000,
+            "age": "29",
+            "birthPlace": "Seoul, South Korea",
+            "height": "163cm (5'4\")",
+            "weight": "48kg (106lbs)",
+            "yearsActive": "2015-present",
+            "bloodType": "A",
+            "MBTI": "ISTP",
+            "occupation": [
+                "Singer",
+                ...
+            ],
+            "position": [
+                "Lead Dancer",
+                "Lead Vocalist",
+                ...
+            ],
+            "color": "Sky Blue",
+            "instagram": [
+                "https://www.instagram.com/nayeonyny/"
+            ],
+            "twitter": null,
+            "zepeto": [
+                "https://user.zepeto.me/nayeon"
+            ],
+            "emoji": [
+                "🐰"
+            ],
+            "instrument": null,
+            "agency": "JYP Entertainment",
+            "associatedActs": [
+                "TWICE",
+                "JYP Nation",
+                "SIXTEEN"
+            ],
+            "images": [
+                "https://static.wikia.nocookie.net/twicenation/images/a/a7/Nayeon_Strategy_Step_1_1.jpg/revision/latest?cb=20241116002546&format=original",
+                ...
+            ],
+            "signature": "https://static.wikia.nocookie.net/twicenation/images/4/4b/Nayeon_Signature.png/revision/latest?cb=20200717041312&format=original",
+            "facts": [
+                "Nayeon was originally set to debut in the girl group 6mix with Jeongyeon, Jihyo and Sana.",
+                ...
+            ],
+            "partner": null,
+            "family": [
+                {
+                    "name": "Cheon Se-ah",
+                    "relationship": "Mother"
+                },
+                ...
+            ],
+            "relatives": [
+                {
+                    "name": "Ji Yun Seo",
+                    "relationship": "Maternal cousin"
+                }
+            ],
+            "lovely": {
+                "name": "Navely",
+                "height": "23cm",
+                "weight": "1.3kg",
+                "personality": "Positive",
+                "description": "'Loves kids!'",
+                "picture": "https://static.wikia.nocookie.net/twicenation/images/5/5e/Navely.jpg/revision/latest?cb=20200514115137&format=original",
+                "banner": "https://static.wikia.nocookie.net/twicenation/images/f/f2/Navely.gif/revision/latest?cb=20190221012000&format=original"
+            },
+            "fandom": "https://twice.fandom.com/wiki/Nayeon"
+        },
+        "Jeongyeon": { ... },
+        ...
 }
 ```
 
@@ -195,9 +443,38 @@ Returns the list of TWICE ships.
 
 ```json
 {
-    "2Yeon": { ... },
-    "SaTzu": { ... },
-    ...
+    "230s": {
+            "name": "230s",
+            "shipped": [
+                "Jeongyeon",
+                ...
+            ],
+            "otherNames": [
+                "No TG"
+                ...
+            ],
+            "rivals": [
+                "2na",
+                ...
+            ],
+            "similarities": [
+                "Both are vocalists",
+                ...
+            ],
+            "differences": [
+                "Jeongyeon was born in South Korea while Sana was born in Japan",
+                ...
+            ],
+            "facts": [
+                "They didn't wear microphones in \"TWICE TV5 -TWICE in SWITZERLAND EP. 07\" because of their loud voices",
+                ...
+            ],
+            "images": "https://static.wikia.nocookie.net/twicenation/images/5/52/230s_Profile-.jpeg/revision/latest?cb=20240224195502&format=original",
+            "fandom": "https://twice.fandom.com/wiki/230s"
+        },
+        "2yeon": { ... },
+        ...
+    }
 }
 ```
 
@@ -216,7 +493,7 @@ Returns data for a specific TWICE ship.
     "name": "MiChaeng",
     "shipped": [
         "Mina",
-        "Chaeyoung"
+        ...
     ],
     "otherNames": [
         "ChaengMi"
