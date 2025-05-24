@@ -509,8 +509,13 @@ class Main:
                             else None
                         )
 
-                        name, native = name.split(" (")
-                        native = native.replace(")", "")
+                        print(name)
+
+                        if "Mina" in name:
+                            native = "묘이 미나"
+                        else:
+                            name, native = name.split(" (")
+                            native = native.replace(")", "")
                         detectedLang = await translator.detect(native)
                         nativeLang = detectedLang.lang.split("-", 1)[0]
 
