@@ -509,8 +509,6 @@ class Main:
                             else None
                         )
 
-                        print(name)
-
                         if "Mina" in name:
                             native = "묘이 미나"
                         else:
@@ -622,21 +620,24 @@ class Main:
                             else None
                         )
 
-                        soloDebut = (
-                            datetime.strptime(soup.find(
-                                "div",
-                                class_="pi-item pi-data pi-item-spacing pi-border-color",
-                                attrs={"data-source": "solo debut"},
+                        if name == "Son Chae-young":
+                            soloDebut = "Second half 2025"
+                        else:
+                            soloDebut = (
+                                datetime.strptime(soup.find(
+                                    "div",
+                                    class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                    attrs={"data-source": "solo debut"},
+                                )
+                                    .find("div", class_="pi-data-value pi-font")
+                                    .text.split(" (")[0], "%B %d, %Y").replace(tzinfo=pytz.UTC).timestamp()
+                                if soup.find(
+                                    "div",
+                                    class_="pi-item pi-data pi-item-spacing pi-border-color",
+                                    attrs={"data-source": "solo debut"},
+                                )
+                                else None
                             )
-                                .find("div", class_="pi-data-value pi-font")
-                                .text.split(" (")[0], "%B %d, %Y").replace(tzinfo=pytz.UTC).timestamp()
-                            if soup.find(
-                                "div",
-                                class_="pi-item pi-data pi-item-spacing pi-border-color",
-                                attrs={"data-source": "solo debut"},
-                            )
-                            else None
-                        )
 
                         yearsActive = (
                             soup.find(
