@@ -122,8 +122,8 @@ async def validateLang():
                     if value == "名井南" and detected_lang == "ja" and key == "zh":
                         continue
                     elif (
-                        value == "Dubu (Tofu)"
-                        and detected_lang in ["zh", "ja", "ha"]
+                        value == "Jasminka Park"
+                        and detected_lang in ["zh", "ja", "ha", "hr"]
                         and key == "informal"
                     ):
                         continue

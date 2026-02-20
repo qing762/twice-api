@@ -487,68 +487,74 @@ class Main:
         async with Translator() as translator:
             async with aiohttp.ClientSession() as session:
                 for x in memberName:
-                    async with session.get(
-                        f"https://twice.fandom.com/wiki/{x}"
-                    ) as response:
+                    async with session.get(f"https://twice.fandom.com/wiki/{x}") as response:
+                        print(f"Fetching data for {x}...")
                         soup = BeautifulSoup(await response.text(), "html.parser")
+
                         family = []
                         relatives = []
-                        name = (
-                            soup.find(
-                                "div",
-                                class_="pi-item pi-data pi-item-spacing pi-border-color",
-                                attrs={"data-source": "birth_name"},
-                            )
-                            .find("div", class_="pi-data-value pi-font")
-                            .text
-                            if soup.find(
-                                "div",
-                                class_="pi-item pi-data pi-item-spacing pi-border-color",
-                                attrs={"data-source": "birth_name"},
-                            )
-                            else None
-                        )
+                        otherNames = {}
 
-                        if "Mina" in name:
-                            native = "묘이 미나"
-                        else:
-                            name, native = name.split(" (")
-                            native = native.replace(")", "")
-                        detectedLang = await translator.detect(native)
-                        nativeLang = detectedLang.lang.split("-", 1)[0]
-
-                        div = soup.find(
+                        birthName = soup.find(
                             "div",
                             class_="pi-item pi-data pi-item-spacing pi-border-color",
-                            attrs={"data-source": "other_name"},
+                            attrs={"data-source": "birth_name"}
                         )
 
-                        text = div.find("div", class_="pi-data-value pi-font").text
+                        if birthName:
+                            rawName = birthName.find("div", class_="pi-data-value pi-font").text
+                            nameParts = rawName.split(" (")
+                            name = nameParts[0]
+                            native = nameParts[1].replace(")", "") if len(nameParts) > 1 else ""
 
-                        otherNames = {}
-                        languages = ["Chinese", "Japanese", "Korean", "English"]
+                            if native:
+                                if native == "湊﨑 紗夏":
+                                    nativeLang = "ja"
+                                else:
+                                    detectedLang = await translator.detect(native)
+                                    nativeLang = detectedLang.lang.split("-", 1)[0]
+                                otherNames[nativeLang] = native
+                        else:
+                            name = None
 
-                        for line in text.split("\n"):
-                            if ":" in line:
-                                for lang in languages:
-                                    line = line.replace(lang + ":", ", " + lang + ":")
-                                line = line[2:] if line.startswith(", ") else line
-                                entries = line.split(",")
-                                entries = [
-                                    entry.strip() for entry in entries if entry.strip()
-                                ]
-                                for entry in entries:
-                                    lang, lang_name = entry.split(":")
-                                    if "Dubu (Tofu)" in lang_name:
-                                        lang_name = lang_name.partition("Dubu (Tofu)")[0]
+                        otherName = soup.find(
+                            "div",
+                            class_="pi-item pi-data pi-item-spacing pi-border-color",
+                            attrs={"data-source": "other_name"}
+                        )
+
+                        if otherName:
+                            text = otherName.find("div", class_="pi-data-value pi-font").text
+                            labels = ["Chinese", "Japanese", "Korean", "English", "Serbian Nickname"]
+                            pattern = f"({'|'.join(labels)}):"
+
+                            for line in text.split("\n"):
+                                parts = [p.strip() for p in re.split(pattern, line) if p and p.strip()]
+
+                                for i in range(0, len(parts), 2):
+                                    if i + 1 >= len(parts):
+                                        break
+
+                                    label = parts[i].replace(":", "").strip()
+                                    nameValue = parts[i+1].strip()
+
+                                    if "Dubu (Tofu)" in nameValue:
+                                        nameValue = nameValue.partition("Dubu (Tofu)")[0].strip()
                                         otherNames["informal"] = "Dubu (Tofu)"
-                                    lang = str(langcodes.find(lang.strip()))
-                                    otherNames[lang] = lang_name.strip()
 
-                            otherNames[nativeLang] = native
+                                    if label == "Serbian Nickname":
+                                        if "informal" in otherNames:
+                                            otherNames["informal"] += f", {nameValue}"
+                                        else:
+                                            otherNames["informal"] = nameValue
 
-                        if otherNames[nativeLang] == "湊﨑 紗夏":
-                            otherNames.pop(nativeLang)
+                                    elif label in labels:
+                                        try:
+                                            code = str(langcodes.find(label))
+                                            if nameValue:
+                                                otherNames[code] = nameValue
+                                        except Exception:
+                                            otherNames[label.lower()] = nameValue
 
                         birthDate, age = (
                             soup.find(
